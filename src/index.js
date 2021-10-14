@@ -1,0 +1,4 @@
+
+class PanicButton extends Component {
+    
+}
