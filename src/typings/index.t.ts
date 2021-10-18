@@ -1,0 +1,1 @@
+declare module '@codificar/react-native-panic';

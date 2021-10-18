@@ -6,12 +6,15 @@ import { PANIC_BUTTON_URL } from "../../../../App/Util/Constants";
 import { Image } from "native-base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import panicIcon from "./img/panicIcon.png";
+
+//THE PANIC SETTINGS MUST BE CREATED IN THE BACKEND TO BE PASSED UPON THE FRONTEND
+
 //the component that is used in the mobilidade/react-user is the ServiceInProgressScreen
 //to use this component first you have to establish the route into the app constants, then you can pass it as an import into the component 
 //then you must establish if the user/provider shall receive it or not, based in the props received in the constructor that builds the screen
 //then the two props must be stored in constants then 
 //this component receives two props, the first one is ledgerId and the second the requestId
-export default class PanicButton extends React.Component {
+class PanicButton extends React.Component {
     constructor (props) {
         super (props)
         this.api = axios;
@@ -100,3 +103,5 @@ const style = StyleSheet.create(
         },
     }
 )
+
+export default PanicButton;
