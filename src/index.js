@@ -2,9 +2,9 @@ import React from "react";
 import axios from 'react-native-log-errors/src/services/api';
 import {Alert, StyleSheet} from 'react-native';
 import { PANIC_BUTTON_URL } from "../../../../App/Util/Constants";
-import { Image } from "native-base";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import panicIcon from "./img/panicIcon.png";
+import { Image } from "react-native";
+import { TouchableOpacity } from "react-native";
+import {panicIcon} from "./img/panicIcon.png";
 
 //THE PANIC SETTINGS MUST BE CREATED IN THE BACKEND TO BE PASSED UPON THE FRONTEND
 //import i18n, { strings } from "../../Locales/i18n";
@@ -14,7 +14,7 @@ import panicIcon from "./img/panicIcon.png";
 //then you must establish if the user/provider shall receive it or not, based in the props received in the constructor that builds the screen
 //then the two props must be stored in constants then 
 //this component receives two props, the first one is ledgerId and the second the requestId
-export default class PanicButton extends React.Component {
+export class PanicButton extends React.Component {
     constructor (props) {
         super (props)
         this.api = axios;
@@ -31,15 +31,15 @@ export default class PanicButton extends React.Component {
         }
     }
 
-    componentDidUpdate () {
-        this.setState({
-            requestId:this.props.requestId,
-            ledgerId:this.props.ledgerId,
-        })
+    componentDidMount () {
     }
 
    sendPanicRequest() { 
-    this.setState({isSendingCode:true});
+    this.setState({
+        isSendingCode:true,
+         requestId: this.props.requestId,
+         ledgerId: this.props.ledgerId,
+        });
    const response = this.api.post ({
         url: PANIC_BUTTON_URL,
         data: {
@@ -54,6 +54,28 @@ export default class PanicButton extends React.Component {
         })
     }
 
+    panicAlertJSXt(){
+        return (
+            Alert.alert('Panic Alert', "Panic alert Message", [
+                {
+                    text: 'will send code?',
+                    onPress: () => this.sendPanicRequest(),
+                },
+            ], { cancelable: true }))
+    }
+
+panicSendRequestJSX(){
+    return (
+        <TouchableOpacity 
+        style={style.PanicButton} 
+        onPress={function () {
+            this.setState({isSendingCode:true})
+           this.sendPanicRequest}}>
+        <Image source={panicIcon} style={{ width: 22, height: 27, resizeMode: 'center' }} />
+     </TouchableOpacity>
+     )
+}
+
     //create a stylesheet to be used in the component
     //finish creating the api call and thus, restore the state to show a loading then send the request
     //show alert when clicked
@@ -61,28 +83,21 @@ export default class PanicButton extends React.Component {
     render () {
         if (this.state.isSendingCode === false) {
             return (
-            <TouchableOpacity style={style.PanicButton} onPress={()=>this.setState(isSendingCode=true)}>
-                <Image source={panicIcon} style={{ width: 22, height: 27, resizeMode: 'center' }} />
-            </TouchableOpacity>
+            this.panicSendRequestJSX()
             )
         } else if (this.state.isSendingCode === true) {
             return (
-                Alert.alert('Panic Alert', "Panic alert Message", [
-                    {
-                        text: 'will send code?',
-                        onPress: () => this.sendPanicRequest(),
-                    },
-                ], { cancelable: true }))
+                this.panicAlertJSX())
         } else if (this.state.isSendingCode===false && this.state.requestResponse.data.success ===true 
             && this.state.requestResponse.data.id !== null) {
         return (
             Alert.alert("Request Successful", "successMessage")
         )} else {
-            <TouchableOpacity style={style.container.PanicButton} onPress={()=>this.setState(isSendingCode=true)}>
-                <Image source={panicIcon} style={{ width: 22, height: 27, resizeMode: 'center' }} />
-             </TouchableOpacity>
+            return(
+                this.panicSendRequestJSX()
+            )
         }
-    }
+    } 
 }
 
 const style = StyleSheet.create({
@@ -90,7 +105,7 @@ const style = StyleSheet.create({
             position: 'absolute',
             elevation: 3,
             zIndex: 0.1,
-            bottom: 300,
+            bottom: 255,
             right: 15,
             borderRadius: 50,
             backgroundColor: "#fff",
