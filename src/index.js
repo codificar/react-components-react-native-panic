@@ -71,7 +71,7 @@ panicSendRequestJSX(){
         onPress={function () {
             this.setState({isSendingCode:true})
            this.sendPanicRequest}}>
-        <Image source={panicIcon} style={{ width: 22, height: 27, resizeMode: 'center' }} />
+        <Image source={require('./img/panicIcon.png')} style={{ width: 22, height: 27, resizeMode: 'center' }} />
      </TouchableOpacity>
      )
 }
