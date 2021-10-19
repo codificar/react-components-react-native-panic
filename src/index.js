@@ -34,8 +34,8 @@ class PanicButton extends React.Component {
 
     componentDidMount () {
         this.setState({
-            requestId= props.requestId,
-            ledgerId= props.ledgerId,
+            requestId:props.requestId,
+            ledgerId:props.ledgerId,
         })
     }
 
