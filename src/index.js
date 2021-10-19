@@ -40,7 +40,7 @@ class PanicButton extends React.Component {
     }
 
    sendPanicRequest() { 
-    this.setState({isSendingCode=true});
+    this.setState({isSendingCode:true});
    const response = this.api.post ({
         url: PANIC_BUTTON_URL,
         data: {
@@ -49,8 +49,8 @@ class PanicButton extends React.Component {
         }
     }).then(response => {
             this.setState({
-                isSendingCode=false,
-                requestResponse=response.data,
+                isSendingCode:false,
+                requestResponse:response.data,
             }).then(console.log(response.data));
         })
     }
