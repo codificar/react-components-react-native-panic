@@ -1,5 +1,4 @@
-import React, {Component} from "react";
-import i18n, { strings } from "../../Locales/i18n";
+import React from "react";
 import axios from 'react-native-log-errors/src/services/api';
 import {Alert, StyleSheet} from 'react-native';
 import { PANIC_BUTTON_URL } from "../../../../App/Util/Constants";
@@ -8,20 +7,20 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import panicIcon from "./img/panicIcon.png";
 
 //THE PANIC SETTINGS MUST BE CREATED IN THE BACKEND TO BE PASSED UPON THE FRONTEND
+//import i18n, { strings } from "../../Locales/i18n";
 
 //the component that is used in the mobilidade/react-user is the ServiceInProgressScreen
 //to use this component first you have to establish the route into the app constants, then you can pass it as an import into the component 
 //then you must establish if the user/provider shall receive it or not, based in the props received in the constructor that builds the screen
 //then the two props must be stored in constants then 
 //this component receives two props, the first one is ledgerId and the second the requestId
-class PanicButton extends React.Component {
+export default class PanicButton extends React.Component {
     constructor (props) {
         super (props)
         this.api = axios;
 		this.api.defaults.headers = {
 			Accept: "application/json",
 			"Content-Type": "application/json",
-			locale: i18n.locale,
     }
 
         this.state = {
@@ -32,10 +31,10 @@ class PanicButton extends React.Component {
         }
     }
 
-    componentDidMount () {
+    componentDidUpdate () {
         this.setState({
-            requestId:props.requestId,
-            ledgerId:props.ledgerId,
+            requestId:this.props.requestId,
+            ledgerId:this.props.ledgerId,
         })
     }
 
@@ -62,22 +61,22 @@ class PanicButton extends React.Component {
     render () {
         if (this.state.isSendingCode === false) {
             return (
-            <TouchableOpacity style={style.container.PanicButton} onPress={()=>this.setState(isSendingCode=true)}>
+            <TouchableOpacity style={style.PanicButton} onPress={()=>this.setState(isSendingCode=true)}>
                 <Image source={panicIcon} style={{ width: 22, height: 27, resizeMode: 'center' }} />
             </TouchableOpacity>
             )
         } else if (this.state.isSendingCode === true) {
             return (
-                Alert.alert(strings.panicButton.panicButtonAlert, strings.panicButton.panicButtonAlertMessage, [
+                Alert.alert('Panic Alert', "Panic alert Message", [
                     {
-                        text: strings.panicButton.panicButtonAlertButton,
+                        text: 'will send code?',
                         onPress: () => this.sendPanicRequest(),
                     },
                 ], { cancelable: true }))
         } else if (this.state.isSendingCode===false && this.state.requestResponse.data.success ===true 
             && this.state.requestResponse.data.id !== null) {
         return (
-            Alert.alert(strings.panicButton.panicButtonSuccess, strings.panicButtonSuccessMessage)
+            Alert.alert("Request Successful", "successMessage")
         )} else {
             <TouchableOpacity style={style.container.PanicButton} onPress={()=>this.setState(isSendingCode=true)}>
                 <Image source={panicIcon} style={{ width: 22, height: 27, resizeMode: 'center' }} />
@@ -86,8 +85,7 @@ class PanicButton extends React.Component {
     }
 }
 
-const style = StyleSheet.create(
-    container ={
+const style = StyleSheet.create({
         PanicButton: {
             position: 'absolute',
             elevation: 3,
@@ -101,7 +99,5 @@ const style = StyleSheet.create(
             justifyContent: "center",
             alignItems: "center"
         },
-    }
+}
 )
-
-export default PanicButton;
