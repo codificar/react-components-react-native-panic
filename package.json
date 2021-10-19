@@ -2,7 +2,7 @@
   "name": "@codificar/react-native-panic",
   "version": "1.0.0",
   "description": "This library will provide a component that is a panic button that is linked into the backend and if configured, any public secuirty provider",
-  "main": "index",
+  "main": "src/index",
   "typings": "src/index",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
