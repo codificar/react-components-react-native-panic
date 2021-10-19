@@ -54,7 +54,7 @@ export class PanicButton extends React.Component {
         })
     }
 
-    panicAlertJSXt(){
+   panicAlertJSX(){
         return (
             Alert.alert('Panic Alert', "Panic alert Message", [
                 {
@@ -68,9 +68,7 @@ panicSendRequestJSX(){
     return (
         <TouchableOpacity 
         style={style.PanicButton} 
-        onPress={function () {
-            this.setState({isSendingCode:true})
-           this.sendPanicRequest}}>
+        onPress={() => this.sendPanicRequest()}>
         <Image source={require('./img/panicIcon.png')} style={{ width: 22, height: 27, resizeMode: 'center' }} />
      </TouchableOpacity>
      )
