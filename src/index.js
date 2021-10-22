@@ -39,7 +39,41 @@ export class PanicButton extends React.Component {
             success: false,
         }
     }
-//TODO:FINISH UP THIS COMPONENT
+
+    panicSendRequestJSX(){
+        return (
+            <TouchableOpacity 
+            style={style.PanicButton} 
+            onPress={() => this.willSendPanicRequest()}>
+            <Image source={require('./img/panicIcon.png')} style={{ width: 22, height: 27, resizeMode: 'center' }} />
+         </TouchableOpacity>
+         )
+    }
+
+   panicAlertJSX(){
+        return (
+            Alert.alert(this.props.confirmAlertTitle, this.props.confirmAlertMessage, [
+                {
+                    text: this.props.confirmAlertButtonText,
+                    onPress: () => this.sendPanicRequest(),
+                }, 
+                ,{
+                    text: this.props.cancelAlertButtonText,
+                    onPress: () => this.setState({isAlertOpen: false}),
+                },
+            ], { cancelable: true }))
+    }
+
+    panicAlertSuccessJSX(){
+        return (
+            Alert.alert(this.props.successAlertTitle, this.props.successAlertMessage, 
+                [{
+                    text: this.props.successAlertButtonText,
+                    onPress: () => this.setState({success: false}),
+                }], { cancelable: true }))
+    }
+
+    
     async willSendPanicRequest(){
         console.log("request_id", this.props.requestId);
         console.log("ledger_id", this.props.ledgerId);
@@ -81,38 +115,6 @@ export class PanicButton extends React.Component {
 
 
 
-    panicSendRequestJSX(){
-        return (
-            <TouchableOpacity 
-            style={style.PanicButton} 
-            onPress={() => this.willSendPanicRequest()}>
-            <Image source={require('./img/panicIcon.png')} style={{ width: 22, height: 27, resizeMode: 'center' }} />
-         </TouchableOpacity>
-         )
-    }
-
-   panicAlertJSX(){
-        return (
-            Alert.alert(this.props.confirmAlertTitle, this.props.confirmAlertMessage, [
-                {
-                    text: this.props.confirmAlertButtonText,
-                    onPress: () => this.sendPanicRequest(),
-                }, 
-                ,{
-                    text: this.props.cancelAlertButtonText,
-                    onPress: () => this.setState({isAlertOpen: false}),
-                },
-            ], { cancelable: true }))
-    }
-
-    panicAlertSuccessJSX(){
-        return (
-            Alert.alert(this.props.successAlertTitle, this.props.successAlertMessage, 
-                [{
-                    text: this.props.successAlertButtonText,
-                    onPress: () => this.setState({success: false}),
-                }], { cancelable: true }))
-    }
 
 
 
