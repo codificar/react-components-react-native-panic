@@ -47,7 +47,7 @@ export class PanicButton extends React.Component {
    async sendPanicRequest() { 
 
    const response = await this.api.post ({
-        url: PANIC_BUTTON_URL,
+        url: this.props.panicButtonUrl,
         data: {
             ledgerId:this.state.ledgerId,
             requestId: this.state.requestId,
