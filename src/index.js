@@ -6,14 +6,18 @@ import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
 import {panicIcon} from "./img/panicIcon.png";
 
-//THE PANIC SETTINGS MUST BE CREATED IN THE BACKEND TO BE PASSED UPON THE FRONTEND
-//import i18n, { strings } from "../../Locales/i18n";
+    //props 
+    //ledgerId::number
+    //requestId::number
+    //confirmAlertTitle :: String
+    //confirmAlertMessage :: String
+    //confirmAlertButtonText :: String
+    //cancelAlertButtonText:: String
+    //successAlertTitle :: String
+    //successAlertMessage :: String
+    //successAlertButtonText :: String
+    
 
-//the component that is used in the mobilidade/react-user is the ServiceInProgressScreen
-//to use this component first you have to establish the route into the app constants, then you can pass it as an import into the component 
-//then you must establish if the user/provider shall receive it or not, based in the props received in the constructor that builds the screen
-//then the two props must be stored in constants then 
-//this component receives two props, the first one is ledgerId and the second the requestId
 export class PanicButton extends React.Component {
     constructor (props) {
         super (props)
@@ -24,6 +28,7 @@ export class PanicButton extends React.Component {
     }
 
         this.state = {
+            willSendcode: false,
             isSendingCode: false,
             requestId: 0,
             ledgerId: 0,
@@ -31,72 +36,79 @@ export class PanicButton extends React.Component {
         }
     }
 
-    componentDidMount () {
+    async willSendPanicRequest(){
+        this.setState({
+             requestId: this.props.requestId,
+             ledgerId: this.props.ledgerId,
+            });
+            return this.panicAlertJSX();
     }
 
-   sendPanicRequest() { 
-    this.setState({
-        isSendingCode:true,
-         requestId: this.props.requestId,
-         ledgerId: this.props.ledgerId,
-        });
-   const response = this.api.post ({
+   async sendPanicRequest() { 
+
+   const response = await this.api.post ({
         url: PANIC_BUTTON_URL,
         data: {
-            ledgerId: this.state.ledgerId,
+            ledgerId:this.state.ledgerId,
             requestId: this.state.requestId,
         }
     }).then(response => {
             this.setState({
                 isSendingCode:false,
+                willSendcode:false,
                 requestResponse:response.data,
             }).then(console.log(response.data));
+        }).finally(() => {
+            if (this.state.requestResponse.success === "true" && this.state.requestResponse.id !== 0){
+                return this.panicAlertSuccessJSX();
+            }
         })
+    }
+
+
+
+
+    panicSendRequestJSX(){
+        return (
+            <TouchableOpacity 
+            style={style.PanicButton} 
+            onPress={() => this.willSendPanicRequest()}>
+            <Image source={require('./img/panicIcon.png')} style={{ width: 22, height: 27, resizeMode: 'center' }} />
+         </TouchableOpacity>
+         )
     }
 
    panicAlertJSX(){
         return (
-            Alert.alert('Panic Alert', "Panic alert Message", [
+            Alert.alert(this.props.confirmAlertTitle, this.props.confirmAlertMessage, [
                 {
-                    text: 'will send code?',
+                    text: this.props.confirmAlertButtonText,
                     onPress: () => this.sendPanicRequest(),
+                }, 
+                ,{
+                    text: this.props.cancelAlertButtonText,
+                    onPress: () => this.setState({isAlertOpen: false}),
                 },
             ], { cancelable: true }))
     }
 
-panicSendRequestJSX(){
-    return (
-        <TouchableOpacity 
-        style={style.PanicButton} 
-        onPress={() => this.sendPanicRequest()}>
-        <Image source={require('./img/panicIcon.png')} style={{ width: 22, height: 27, resizeMode: 'center' }} />
-     </TouchableOpacity>
-     )
-}
+    panicAlertSuccessJSX(){
+        return (
+            Alert.alert(this.props.SuccessAlertTitle, this.props.SuccessAlertMessage, 
+                [{
+                    text: this.props.SuccessAlertButtonText,
+                    onPress: () => this.setState({isAlertOpen: false}),
+                }], { cancelable: true }))
+    }
 
-    //create a stylesheet to be used in the component
-    //finish creating the api call and thus, restore the state to show a loading then send the request
-    //show alert when clicked
-     //if return is success and id is not 0, then show the success message
+
+
     render () {
-        if (this.state.isSendingCode === false) {
             return (
             this.panicSendRequestJSX()
             )
-        } else if (this.state.isSendingCode === true) {
-            return (
-                this.panicAlertJSX())
-        } else if (this.state.isSendingCode===false && this.state.requestResponse.data.success ===true 
-            && this.state.requestResponse.data.id !== null) {
-        return (
-            Alert.alert("Request Successful", "successMessage")
-        )} else {
-            return(
-                this.panicSendRequestJSX()
-            )
         }
-    } 
-}
+ }
 
 const style = StyleSheet.create({
         PanicButton: {
