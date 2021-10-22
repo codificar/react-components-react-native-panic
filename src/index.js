@@ -1,10 +1,18 @@
 import React from "react";
-import axios from 'react-native-log-errors/src/services/api';
+import axios, { Axios } from "axios";
+//import axios from 'react-native-log-errors/src/services/api';
 import {Alert, StyleSheet} from 'react-native';
-import { PANIC_BUTTON_URL } from "../../../../App/Util/Constants";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
-import {panicIcon} from "./img/panicIcon.png";
+
+//THE PANIC SETTINGS MUST BE CREATED IN THE BACKEND TO BE PASSED UPON THE FRONTEND
+//import i18n, { strings } from "../../Locales/i18n";
+
+//the component that is used in the mobilidade/react-user is the ServiceInProgressScreen
+//to use this component first you have to establish the route into the app constants, then you can pass it as an import into the component 
+//then you must establish if the user/provider shall receive it or not, based in the props received in the constructor that builds the screen
+//then the two props must be stored in constants then 
+//this component receives two props, the first one is ledgerId and the second the requestId
 
     //props 
     //ledgerId::number
@@ -21,11 +29,6 @@ import {panicIcon} from "./img/panicIcon.png";
 export class PanicButton extends React.Component {
     constructor (props) {
         super (props)
-        this.api = axios;
-		this.api.defaults.headers = {
-			Accept: "application/json",
-			"Content-Type": "application/json",
-    }
 
         this.state = {
             willSendcode: false,
@@ -33,35 +36,45 @@ export class PanicButton extends React.Component {
             requestId: 0,
             ledgerId: 0,
             requestResponse: "",
+            success: false,
         }
     }
-
+//TODO:FINISH UP THIS COMPONENT
     async willSendPanicRequest(){
+        console.log("request_id", this.props.requestId);
+        console.log("ledger_id", this.props.ledgerId);
         this.setState({
-             requestId: this.props.requestId,
-             ledgerId: this.props.ledgerId,
+            ledgerId: this.props.ledgerId,
+             requestId: this.props.requestId
             });
             return this.panicAlertJSX();
     }
 
-   async sendPanicRequest() { 
-
-   const response = await this.api.post ({
-        url: this.props.panicButtonUrl,
-        data: {
-            ledgerId:this.state.ledgerId,
-            requestId: this.state.requestId,
-        }
-    }).then(response => {
+    async sendPanicRequest(){
+    console.log("Sending panic request");
+    const instance = axios.create({
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        }});
+    
+   const apiCall = await axios.post (
+        this.props.panicButtonUrl,       
+        {
+            ledger_id:this.state.ledgerId,
+            request_id: this.state.requestId,
+        })
+        .then(response => {
+        console.log("response", response.data);
             this.setState({
-                isSendingCode:false,
-                willSendcode:false,
-                requestResponse:response.data,
-            }).then(console.log(response.data));
-        }).finally(() => {
+                requestResponse:JSON.stringify(response.data),
+            })
             if (this.state.requestResponse.success === "true" && this.state.requestResponse.id !== 0){
-                return this.panicAlertSuccessJSX();
+                this.setState({success:true});
             }
+        }
+        ). finally(() => {
+            return this.panicAlertSuccessJSX()  
         })
     }
 
@@ -94,19 +107,21 @@ export class PanicButton extends React.Component {
 
     panicAlertSuccessJSX(){
         return (
-            Alert.alert(this.props.SuccessAlertTitle, this.props.SuccessAlertMessage, 
+            Alert.alert(this.props.successAlertTitle, this.props.successAlertMessage, 
                 [{
-                    text: this.props.SuccessAlertButtonText,
-                    onPress: () => this.setState({isAlertOpen: false}),
+                    text: this.props.successAlertButtonText,
+                    onPress: () => this.setState({success: false}),
                 }], { cancelable: true }))
     }
 
 
 
     render () {
-            return (
-            this.panicSendRequestJSX()
-            )
+                if (this.state.success === true && this.state.requestResponse.id != null){
+                   return  this.panicAlertSuccessJSX()
+                } else if (this.state.success === false){
+                    return this.panicSendRequestJSX()
+                }
         }
  }
 
@@ -126,3 +141,15 @@ const style = StyleSheet.create({
         },
 }
 )
+
+        // } else if (this.state.willSendcode === true) {
+        //     return (
+        //         this.panicAlertJSX())
+        // } else if (this.state.isSendingCode===false && this.state.willSendcode===false && this.state.requestResponse.data.success ===true 
+        //     && this.state.requestResponse.data.id !== null) {
+        // return (
+        //     Alert.alert("Request Successful", "successMessage")
+        // )} else {
+        //     return(
+        //         this.panicSendRequestJSX()
+        //     )
