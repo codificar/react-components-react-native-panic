@@ -138,8 +138,8 @@ export class PanicButton extends React.Component {
 
 const style = StyleSheet.create({
   PanicButton: {
-    position: "absolute",
-    bottom: -38,
+    // position: "absolute",
+    // bottom: -38,
     right: 0,
     borderRadius: 50,
     backgroundColor: "#fff",
