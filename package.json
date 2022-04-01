@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.23.0",
-    "react-native-i18n": "^2.0.15",
+    "react-native-i18n": "^2.0.15"
   }
 }
