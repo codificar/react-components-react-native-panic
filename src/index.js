@@ -59,13 +59,12 @@ export class PanicButton extends React.Component {
       this.props.confirmAlertMessage,
       [
         {
-          text: this.props.confirmAlertButtonText,
-          onPress: () => this.sendPanicRequest(),
-        },
-        ,
-        {
           text: this.props.cancelAlertButtonText,
           onPress: () => this.setState({ isAlertOpen: false }),
+        },
+        {
+          text: this.props.confirmAlertButtonText,
+          onPress: () => this.sendPanicRequest(),
         },
       ],
       { cancelable: true }
