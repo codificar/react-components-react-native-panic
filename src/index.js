@@ -42,7 +42,7 @@ export class PanicButton extends React.Component {
   panicSendRequestJSX() {
     return (
       <TouchableOpacity
-        style={style.PanicButton}
+        style={[style.PanicButton, this.props.styles]}
         onPress={() => this.willSendPanicRequest()}
       >
         <Image
