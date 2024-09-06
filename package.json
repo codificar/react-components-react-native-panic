@@ -12,6 +12,6 @@
   "dependencies": {
     "axios": "^0.23.0",
     "react-native-i18n": "^2.0.15",
-    "react-native-log-errors": "git+https://libs:ofImhksJ@git.codificar.com.br/react-components/react-native-log-errors.git#0ae71707"
+    "react-native-log-errors": "git+https://github.com/codificar/react-components-react-native-log-errors.git#master"
   }
 }
